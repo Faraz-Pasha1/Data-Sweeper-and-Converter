@@ -2,7 +2,7 @@
 import streamlit as st
 import pandas as pd
 import os
-import plotly.express as px
+# import plotly.express as px
 from io import BytesIO
 
 # st.set_page_config(page_title="Data Sweeper", layout='wide')
@@ -68,12 +68,6 @@ if uploaded_files:
         
         st.subheader("📊 Data Preview")
         st.dataframe(df.head())
-
-        # st.subheader("🔍 Search & Filter")
-        # search_term = st.text_input(f"Search in {file.name}")
-        # if search_term:
-        #     df = df[df.astype(str).apply(lambda x: x.str.contains(search_term, case=False, na=False)).any(axis=1)]
-        #     st.dataframe(df.head())
         
         st.subheader("🧹 Smart Data Cleaning")
         if st.checkbox(f"Clean Data for {file.name}"):
@@ -92,21 +86,25 @@ if uploaded_files:
 
 
         st.subheader("📈 Data Visualization")
-        chart_type = st.selectbox("Select Chart Type", ["Bar Chart", "Scatter Chart", "Pie Chart"])
-        numeric_cols = df.select_dtypes(include='number').columns
+        if st.checkbox(f"Show Visualization for {file.name}"):
+            st.bar_chart(df.select_dtypes(include="number").iloc[:,:2])
+
+
+        # chart_type = st.selectbox("Select Chart Type", ["Bar Chart", "Scatter Chart", "Pie Chart"])
+        # numeric_cols = df.select_dtypes(include='number').columns
         
-        if len(numeric_cols) >= 2:
-            x_col = st.selectbox("X-axis Column", numeric_cols)
-            y_col = st.selectbox("Y-axis Column", numeric_cols)
+        # if len(numeric_cols) >= 2:
+        #     x_col = st.selectbox("X-axis Column", numeric_cols)
+        #     y_col = st.selectbox("Y-axis Column", numeric_cols)
             
-            if chart_type == "Bar Chart":
-                fig = px.bar(df, x=x_col, y=y_col, title=f"Bar Chart of {x_col} vs {y_col}")
-            elif chart_type == "Scatter Chart":
-                fig = px.scatter(df, x=x_col, y=y_col, title=f"Scatter Chart of {x_col} vs {y_col}")
-            elif chart_type == "Pie Chart":
-                fig = px.pie(df, names=x_col, values=y_col, title=f"Pie Chart of {x_col}")
+        #     if chart_type == "Bar Chart":
+        #         fig = px.bar(df, x=x_col, y=y_col, title=f"Bar Chart of {x_col} vs {y_col}")
+        #     elif chart_type == "Scatter Chart":
+        #         fig = px.scatter(df, x=x_col, y=y_col, title=f"Scatter Chart of {x_col} vs {y_col}")
+        #     elif chart_type == "Pie Chart":
+        #         fig = px.pie(df, names=x_col, values=y_col, title=f"Pie Chart of {x_col}")
             
-            st.plotly_chart(fig)
+        #     st.plotly_chart(fig)
         
         st.subheader("🔄 File Conversion")
         conversion_type = st.radio(f"Convert {file.name} to:", ["CSV", "Excel"], key=file.name)
